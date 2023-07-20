@@ -1,4 +1,3 @@
-import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -24,8 +23,4 @@ Web3Client getEthClient() {
   var apiUrl = kEthereumNetworkUrl; //Replace with your API
   var httpClient = Client();
   return Web3Client(apiUrl, httpClient);
-}
-
-Future<Box> getHiveBox() async {
-  return await Hive.openBox("SDK");
 }

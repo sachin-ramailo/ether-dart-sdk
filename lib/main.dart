@@ -1,4 +1,3 @@
-import 'package:hive/hive.dart';
 import 'package:sdk/ethereum_utils.dart';
 
 import 'package:sdk/utils/constants.dart';
@@ -8,7 +7,6 @@ import 'account.dart';
 
 void main() async {
   AccountsUtil accountsUtil = AccountsUtil.getInstance();
-  Hive.init("dir");
   // var account = accountsUtil.getAccountAddress();
   // final pKeyHex = accountsUtil.getPrivateKeyHex();
   // printLog("private key for new account = $pKeyHex");
@@ -21,5 +19,4 @@ void main() async {
   etherAmount = await accountsUtil.getBalance();
   printLog(
       "ether balance in gwei = ${etherAmount.getValueInUnit(EtherUnit.gwei)}");
-  Hive.close();
 }

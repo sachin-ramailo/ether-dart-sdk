@@ -16,7 +16,7 @@ class GenerateAccountScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          HeadingText(text: 'Welcome To The RLY Demo App'),
+          HeadingText(text: 'Welcome To \nThe RLY Demo App'),
           RlyCard(
             child: Column(
               children: [

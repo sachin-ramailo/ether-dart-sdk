@@ -1,9 +1,8 @@
 import 'package:convert/convert.dart';
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
-import 'package:hive/hive.dart';
-
 import 'package:sdk/utils/constants.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'keyStorageConfig.dart';
 
@@ -46,8 +45,8 @@ class KeyManagerImpl extends KeyManager {
 
   @override
   Future<String?> getMnemonic() async {
-    Box box = await getHiveBox();
-    String? mnemonic = box.get(kkeyForStoringMnemonic);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? mnemonic = preferences.getString(kkeyForStoringMnemonic);
     printLog("mnemonic = $mnemonic");
     if (isStringEmpty(mnemonic)) {
       mnemonic = generateMnemonic();
@@ -75,8 +74,8 @@ class KeyManagerImpl extends KeyManager {
   Future<void> saveMnemonic(String mnemonic,
       {KeyStorageConfig? options}) async {
     if (options == null || !options.saveToCloud) {
-      Box box = await getHiveBox();
-      box.put(kkeyForStoringMnemonic, mnemonic);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString(kkeyForStoringMnemonic, mnemonic);
     }
   }
 

@@ -11,10 +11,10 @@ dependencies:
   web3dart: ^2.7.0
   bip39: ^1.0.6
   bip39_mnemonic: ^3.0.6
-  hive: ^2.2.3
   ed25519_hd_key: ^2.2.0
   ethereum: ^6.0.0
-  # path: ^1.8.0
+  shared_preferences: ^2.0.20
+
 
 dev_dependencies:
   lints: ^2.0.0
