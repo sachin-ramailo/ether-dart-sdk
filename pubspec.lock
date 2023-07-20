@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  ethereum:
+    dependency: "direct main"
+    description:
+      name: ethereum
+      sha256: "56bd3e939786568cb2025e6b4c03d5d9639183fbf18245f5d49f7752b4e592be"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   file:
     dependency: transitive
     description:

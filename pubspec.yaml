@@ -13,7 +13,7 @@ dependencies:
   bip39_mnemonic: ^3.0.6
   hive: ^2.2.3
   ed25519_hd_key: ^2.2.0
-
+  ethereum: ^6.0.0
   # path: ^1.8.0
 
 dev_dependencies:
