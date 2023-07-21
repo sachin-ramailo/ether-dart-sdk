@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// const RlyNetwork = RlyMumbaiNetwork;
+
 class AccountOverviewScreen extends StatefulWidget {
   final String rlyAccount;
 
@@ -25,7 +27,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
     // double bal = await RlyNetwork.getBalance();
 
     setState(() {
-      balance = 2.0;
+      balance = 0.0;
       loading = false;
     });
   }
