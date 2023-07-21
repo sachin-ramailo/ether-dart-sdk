@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdk/account.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // const RlyNetwork = RlyMumbaiNetwork;
@@ -69,9 +70,8 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
   }
 
   void revealMnemonic() async {
-    // String value = await getAccountPhrase();
-    String value = "-----";
-    if (value.isEmpty) {
+    String? value = await AccountsUtil.getInstance().getAccountPhrase();
+    if (value == null || value.isEmpty) {
       throw 'Something went wrong, no Mnemonic when there should be one';
     }
 
