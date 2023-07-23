@@ -14,6 +14,7 @@ dependencies:
   ed25519_hd_key: ^2.2.0
   ethereum: ^6.0.0
   shared_preferences: ^2.0.20
+  eth_sig_util: ^0.0.9
 
 
 dev_dependencies:

@@ -3,11 +3,10 @@ import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../account.dart';
+import '../contracts/erc20.dart';
 import '../error.dart';
+import '../gsnClient/EIP712/PermitTransaction.dart';
 import '../network_config/network_config.dart';
-
-import 'package:sdk/gsnClient/gsnClient.dart';
-import 'package:sdk/gsnClient/gsnTxHelpers.dart';
 
 Future<String> transfer(
   String destinationAddress,
@@ -34,14 +33,14 @@ Future<String> transfer(
 
   final ethers = getEthClient();
 
-  Transaction? transferTx;
+  GsnTransactionDetails? transferTx;
 
   if (metaTxMethod != null &&
       (metaTxMethod == MetaTxMethod.Permit || metaTxMethod == MetaTxMethod.e)) {
     if (metaTxMethod == MetaTxMethod.Permit) {
       transferTx = await getPermitTx(
         account,
-        destinationAddress,
+        EthereumAddress.fromHex(destinationAddress),
         amount,
         network,
         tokenAddress,
@@ -81,7 +80,7 @@ Future<String> transfer(
     } else if (permitSupported) {
       transferTx = await getPermitTx(
         account,
-        destinationAddress,
+        EthereumAddress.fromHex(destinationAddress),
         amount,
         network,
         tokenAddress,
@@ -99,7 +98,6 @@ Future<double> getBalance(
   PrefixedHexString? tokenAddress,
 }) async {
   final account = await AccountsUtil.getInstance().getWallet();
-
   //if token address use it otherwise default to RLY
   tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
   if (account == null) {
@@ -108,10 +106,10 @@ Future<double> getBalance(
 
   final ethers = getEthClient();
 
-  final token = erc20(ethers, tokenAddress);
-  final decimals = await token.decimals();
-  final bal = await token.balanceOf(account.address);
-  return double.parse(ethers.utils.formatUnits(bal.toString(), decimals));
+  final token = erc20(tokenAddress);
+  // final decimals = await token.decimals();
+  final bal = await ethers.getBalance(account.privateKey.address);
+  return bal.getValueInUnit(EtherUnit.gwei);
 }
 
 Future<String> claimRly(NetworkConfig network) async {
