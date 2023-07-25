@@ -1,7 +1,7 @@
 class NetworkConfig {
   final Contracts contracts;
   final GSNConfig gsn;
-  final String? relayerApiKey;
+  String? relayerApiKey;
 
   NetworkConfig({
     required this.contracts,
@@ -27,7 +27,7 @@ class GSNConfig {
   final String relayWorkerAddress;
   final String relayUrl;
   final String rpcUrl;
-  final String chainId;
+  final int chainId;
   final String maxAcceptanceBudget;
   final String domainSeparatorName;
   final int gtxDataZero;

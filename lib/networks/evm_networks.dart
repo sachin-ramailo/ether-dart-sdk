@@ -5,6 +5,7 @@ import 'package:web3dart/web3dart.dart';
 import '../account.dart';
 import '../contracts/erc20.dart';
 import '../error.dart';
+import '../gsnClient/EIP712/MetaTransactions.dart';
 import '../gsnClient/EIP712/PermitTransaction.dart';
 import '../network_config/network_config.dart';
 
@@ -36,7 +37,8 @@ Future<String> transfer(
   GsnTransactionDetails? transferTx;
 
   if (metaTxMethod != null &&
-      (metaTxMethod == MetaTxMethod.Permit || metaTxMethod == MetaTxMethod.e)) {
+      (metaTxMethod == MetaTxMethod.Permit ||
+          metaTxMethod == MetaTxMethod.ExecuteMetaTransaction)) {
     if (metaTxMethod == MetaTxMethod.Permit) {
       transferTx = await getPermitTx(
         account,
@@ -87,7 +89,7 @@ Future<String> transfer(
         ethers,
       );
     } else {
-      throw TransferMethodNotSupportedError();
+      throw transferMethodNotSupportedError;
     }
   }
   return relay(transferTx!, network);

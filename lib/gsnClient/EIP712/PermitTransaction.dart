@@ -13,7 +13,7 @@ import '../../network_config/network_config.dart';
 class Permit {
   String name;
   String version;
-  String chainId;
+  int chainId;
   String verifyingContract;
   String owner;
   String spender;
@@ -275,7 +275,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final paymasterData =
       '0x${token.address.hex.replaceFirst('0x', '')}${fromTx[1].replaceFirst('0x', '')}';
   //following code is inspired from getFeeData method of
-  //abstrac-provider of ethers js library
+  //abstract-provider of ethers js library
   final EtherAmount gasPrice = await provider.getGasPrice();
   final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
   final maxFeePerGas =
