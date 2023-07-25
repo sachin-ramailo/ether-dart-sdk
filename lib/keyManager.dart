@@ -45,6 +45,7 @@ class KeyManagerImpl extends KeyManager {
 
   @override
   Future<String?> getMnemonic() async {
+    //TODO: ultimately this has to be done from native code
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? mnemonic = preferences.getString(kkeyForStoringMnemonic);
     printLog("mnemonic = $mnemonic");
@@ -56,11 +57,13 @@ class KeyManagerImpl extends KeyManager {
   }
 
   Future<String> mnemonicToPrivateKey(String mnemonic) async {
+    //TODO: ultimately this has to be done from native code
     return bip39.mnemonicToSeedHex(mnemonic);
   }
 
   @override
   Future<String> makePrivateKeyFromMnemonic(String mnemonic) async {
+    //TODO: ultimately this has to be done from native code
     if (isStringEmpty(mnemonic)) {
       throw Exception("mnemonic can not be empty!");
     }

@@ -107,7 +107,7 @@ Future<bool> hasExecuteMetaTransaction(
     // final decimalAmount = BigInt.from(amount) * BigInt.from(10).pow(decimals);
     final decimalAmount = BigInt.from(amount) * BigInt.from(10);
     //TODO: inform tej about this
-    // token.function("name").encodeCall();
+    // token.function("name").encodeCall(params);
     final data = await provider.call(
         contract: token,
         function: token.function("transfer"),
@@ -192,6 +192,8 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   String contractAddress,
   Web3Client provider,
 ) async {
+  //TODO: Once things are stable, think about refactoring
+  // to avoid code duplication
   final token = erc20(contractAddress);
   final name = token.abi.name;
   final nonce = await provider.getTransactionCount(token.address);

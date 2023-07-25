@@ -20,8 +20,6 @@ import 'EIP712/RelayRequest.dart';
 import 'EIP712/typedSigning.dart';
 
 class GsnUtils {
-  static const gtxDataNonZero = 64;
-  static const gtxDataZero = 256;
 
   CalldataBytes calculateCalldataBytesZeroNonzero(String calldata) {
     final calldataBuf =
@@ -99,6 +97,11 @@ class GsnUtils {
     // Estimate the gas cost for the relayCall function call
 
     var relayRequestJson = jsonEncode(relayRequest.toJson());
+    //todo: -> at other places in other files too, whereever there is a
+    //function called on populateTransation field(in the rly sdk), instead of calling that
+    //function itself(in dart files),we have to use this encodeCall to make a callable obejct
+    //which will be used further in the code
+    //for ex: here is is used in calculated the gas estimate in the next step
     final functionCall = relayHub.function('relayCall').encodeCall([
       config.domainSeparatorName,
       maxAcceptanceBudget,
@@ -107,17 +110,9 @@ class GsnUtils {
       approvalData
     ]);
 
-    // Estimate gas cost
-    final gasEstimation = await client.estimateGas(
-      sender: null,
-      data: functionCall,
-    );
-
-    // Convert the gas estimation to a hexadecimal string
-    final estimatedGas = gasEstimation.toRadixString(16);
-
-    // Return the estimated calldata cost as a PrefixedHexString
-    return '0x$estimatedGas';
+    //todo: is the calculation of call data cost(from the rly sdk gsnTxHelper file)
+    //similar to the estimate gas here?
+    return BigInt.from(calculateCalldataCost(functionCall, config.gtxDataNonZero, config.gtxDataZero)).toString();
   }
 
   Future<String> getSenderNonce(EthereumAddress sender,
@@ -130,9 +125,12 @@ class GsnUtils {
       params: [sender],
     );
 
+    // TODO:- info explainer
     // Extract the nonce value from the result and convert it to a string
+    // if you go to getNonce method of IForwarderData.dart
+    //there is only one output defined in the getNonce method
+    //that's why we can be sure that result[0] will be used here
     final nonce = (result[0] as BigInt).toString();
-
     return nonce;
   }
 
@@ -191,14 +189,15 @@ class GsnUtils {
       relayRequest['request']['nonce'],
       signature,
     ];
+    ];
 
-    // TODO: FIX THIS
+    // TODO: FIX THIS -> calculate hash
     // final hash = keccak256(hex.encode(([types, parameters])));
     // final rawRelayRequestId = hex.encode(hash.bytes).padLeft(64, '0');
     final rawRelayRequestId = "hex.encode(hash.bytes).padLeft(64, '0');";
     final prefixSize = 8;
     final prefixedRelayRequestId = rawRelayRequestId.replaceFirst(
-        RegExp('^.{${prefixSize}}'), '0' * prefixSize);
+        RegExp('^.{$prefixSize}'), '0' * prefixSize);
     return '0x$prefixedRelayRequestId';
   }
 
@@ -218,8 +217,9 @@ class GsnUtils {
       data: tx,
     );
 
-    //following code is inspired from getFeeData method of
+    //TODO:-> following code is inspired from getFeeData method of
     //abstract-provider of ethers js library
+    //test if it exactly replicates the functions of getFeeData
     final EtherAmount gasPrice = await client.getGasPrice();
     final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
     final maxFeePerGas =
@@ -240,7 +240,7 @@ class GsnUtils {
   Future<String> getClientId() async {
     // Replace this line with the actual method to get the bundleId from the native module
     final bundleId = await getBundleIdFromNativeModule();
-
+//TODO:
     final hexValue = EthereumAddress.fromHex(bundleId).hex;
     return BigInt.parse(hexValue, radix: 16).toString();
   }
