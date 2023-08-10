@@ -22,9 +22,9 @@ class Contracts {
 
 class GSNConfig {
   final String paymasterAddress;
-  final String forwarderAddress;
+  String forwarderAddress;
   final String relayHubAddress;
-  final String relayWorkerAddress;
+  String relayWorkerAddress;
   final String relayUrl;
   final String rpcUrl;
   final int chainId;

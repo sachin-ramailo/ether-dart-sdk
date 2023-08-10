@@ -2,12 +2,12 @@ import '../../network_config/network_config.dart';
 import 'network_config.dart';
 import 'network_config_local.dart';
 
-class NetworkConfig {
-  final Contracts contracts;
-  final GSNConfig gsn;
+// class NetworkConfig {
+//   final Contracts contracts;
+//   final GSNConfig gsn;
 
-  NetworkConfig({required this.contracts, required this.gsn});
-}
+//   NetworkConfig({required this.contracts, required this.gsn});
+// }
 
 // MumbaiNetworkConfig
 final mumbaiNetworkConfig = NetworkConfig(

@@ -1,4 +1,8 @@
 import 'package:sdk/gsnClient//utils.dart';
+import 'package:sdk/gsnClient/gsnClient.dart';
+import 'package:sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:sdk/gsnClient/network_config/network_config_mumbai.dart';
+import 'package:sdk/main.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -129,7 +133,13 @@ Future<String> claimRly(NetworkConfig network) async {
 
   final ethers = getEthClient();
 
-  final claimTx = await getClaimTx(account, network, ethers);
+  final claimTx = await GsnUtils().getClaimTx(
+      AccountKeypair(
+        privateKey: account.privateKey.privateKey.stringValue(),
+        address: account.privateKey.address.hex,
+      ),
+      network,
+      ethers);
 
   return relay(claimTx, network);
 }
@@ -152,7 +162,13 @@ Future<String> relay(
     throw missingWalletError;
   }
 
-  return relayTransaction(account, network, tx);
+  return relayTransaction(
+      AccountKeypair(
+        privateKey: account.privateKey.privateKey.stringValue(),
+        address: account.privateKey.address.toString(),
+      ),
+      mumbaiNetworkConfig,
+      tx);
 }
 
 dynamic getEvmNetwork(NetworkConfig network) {

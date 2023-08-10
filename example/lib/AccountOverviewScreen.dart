@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdk/account.dart';
+import 'package:sdk/gsnClient/network_config/network_config_mumbai.dart';
+import 'package:sdk/networks/evm_networks.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // const RlyNetwork = RlyMumbaiNetwork;
@@ -54,7 +56,11 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
+    await transfer(
+      transferAddress,
+      double.parse(transferBalance),
+      mumbaiNetworkConfig,
+    );
 
     fetchBalance();
 

@@ -16,6 +16,7 @@ dependencies:
   ethereum: ^6.0.0
   shared_preferences: ^2.0.20
   eth_sig_util: ^0.0.9
+  url_launcher: ^6.1.12
 
 
 dev_dependencies:

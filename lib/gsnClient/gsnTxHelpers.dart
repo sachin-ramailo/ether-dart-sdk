@@ -5,10 +5,10 @@ import 'package:convert/convert.dart' as convertLib;
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:sdk/contracts/tokenFaucet.dart';
 import 'package:sdk/gsnClient/ABI/IForwarder.dart';
+import 'package:sdk/main.dart';
 import 'package:web3dart/crypto.dart';
 
 import 'package:sdk/gsnClient/ABI/IRelayHub.dart';
-
 import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
@@ -20,7 +20,6 @@ import 'EIP712/RelayRequest.dart';
 import 'EIP712/typedSigning.dart';
 
 class GsnUtils {
-
   CalldataBytes calculateCalldataBytesZeroNonzero(String calldata) {
     final calldataBuf =
         Uint8List.fromList(convertLib.hex.decode(calldata.substring(2)));
@@ -112,7 +111,9 @@ class GsnUtils {
 
     //todo: is the calculation of call data cost(from the rly sdk gsnTxHelper file)
     //similar to the estimate gas here?
-    return BigInt.from(calculateCalldataCost(functionCall, config.gtxDataNonZero, config.gtxDataZero)).toString();
+    return BigInt.from(calculateCalldataCost(functionCall.stringValue(),
+            config.gtxDataNonZero, config.gtxDataZero))
+        .toString();
   }
 
   Future<String> getSenderNonce(EthereumAddress sender,
@@ -189,7 +190,6 @@ class GsnUtils {
       relayRequest['request']['nonce'],
       signature,
     ];
-    ];
 
     // TODO: FIX THIS -> calculate hash
     // final hash = keccak256(hex.encode(([types, parameters])));
@@ -226,7 +226,7 @@ class GsnUtils {
         gasPrice.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
     final gsnTx = GsnTransactionDetails(
       from: account.address,
-      data: tx.toString(),
+      data: tx.stringValue(),
       value: EtherAmount.zero().toString(),
       to: faucet.address.hex,
       gas: gas.toString(),
@@ -262,9 +262,12 @@ class GsnUtils {
         'details': res.data['error'],
       };
     } else {
-      final txHash = keccak256(res.data['signedTx']).hex;
-      await provider.waitForTransaction(txHash);
-      return txHash;
+      final txHash = keccak256(res.data['signedTx']);
+      await waitForTransactionConfirmation(
+        provider,
+        txHash.stringValue(),
+      );
+      return txHash.stringValue();
     }
   }
 }
@@ -274,4 +277,32 @@ class CalldataBytes {
   final int calldataNonzeroBytes;
 
   CalldataBytes(this.calldataZeroBytes, this.calldataNonzeroBytes);
+}
+
+Future<void> waitForTransactionConfirmation(
+  Web3Client client,
+  String txHash,
+) async {
+  final int maxAttempts = 30;
+  final Duration delayBetweenAttempts = Duration(seconds: 5);
+
+  for (int i = 0; i < maxAttempts; i++) {
+    final TransactionReceipt? receipt =
+        await client.getTransactionReceipt(txHash);
+
+    if (receipt != null) {
+      if (receipt.status == true) {
+        // Transaction was successful
+        return;
+      } else {
+        // Transaction failed
+        throw 'Transaction Failed';
+      }
+    }
+
+    await Future.delayed(delayBetweenAttempts);
+  }
+  throw "Transaction not confirmed";
+  // throw GsnError('Transaction Not Confirmed',
+  //     'Transaction was not confirmed within the expected time.');
 }

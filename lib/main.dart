@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:sdk/ethereum_utils.dart';
 
 import 'package:sdk/utils/constants.dart';
@@ -19,4 +21,12 @@ void main() async {
   etherAmount = await accountsUtil.getBalance();
   printLog(
       "ether balance in gwei = ${etherAmount.getValueInUnit(EtherUnit.gwei)}");
+}
+
+extension ToString on Uint8List {
+  String stringValue() {
+    Uint8List uint8List = Uint8List.fromList(this); // Example Uint8List
+    String convertedString = String.fromCharCodes(uint8List);
+    return convertedString;
+  }
 }
