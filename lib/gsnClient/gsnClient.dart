@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:sdk/gsnClient/EIP712/ForwardRequest.dart';
 import 'package:sdk/gsnClient/EIP712/RelayData.dart';
-
 import 'package:sdk/gsnClient/EIP712/RelayRequest.dart';
 import 'package:sdk/gsnClient/network_config/network_config_mumbai.dart';
 import 'package:sdk/gsnClient/utils.dart';
@@ -209,7 +209,7 @@ Future<String> relayTransaction(
   httpRequest['metadata']['relayRequestId'] = relayRequestId;
 
   final authHeader = {
-    'Authorization': 'Bearer ${config.gsn ?? ''}',
+    'Authorization': 'Bearer ${config.gsn}',
   };
 
   final res = await http.post(
