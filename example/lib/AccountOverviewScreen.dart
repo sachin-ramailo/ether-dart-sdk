@@ -54,7 +54,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
+    // await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
 
     fetchBalance();
 

@@ -42,12 +42,14 @@ class AccountsUtil {
     }
 
     final mnemonic = await _keyManager.getMnemonic();
+    printLog('mnemonic = $mnemonic');
 
     if (mnemonic == null) {
       throw "Mnemonic can't be null...";
     }
 
     final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+    printLog('privateKey = $pkey');
     final wallet = _makeWalletFromPrivateKey(pkey);
 
     _cachedWallet = wallet;
@@ -56,6 +58,7 @@ class AccountsUtil {
 
   Future<String?> getAccountAddress() async {
     final wallet = await getWallet();
+    printLog('Wallet address = ${wallet.privateKey.address.hex}');
     return wallet.privateKey.address.hex;
   }
 
