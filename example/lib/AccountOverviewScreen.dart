@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sdk/account.dart';
+import 'package:sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web3dart/web3dart.dart';
 
 // const RlyNetwork = RlyMumbaiNetwork;
 
@@ -26,9 +28,9 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
     });
 
     // double bal = await RlyNetwork.getBalance();
-
+    EtherAmount amt = await AccountsUtil.getInstance().getBalance();
     setState(() {
-      balance = 0.0;
+      balance = amt.getValueInUnit(EtherUnit.gwei).toDouble();
       loading = false;
     });
   }

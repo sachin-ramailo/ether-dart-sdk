@@ -1,4 +1,4 @@
-import 'package:sdk/gsnClient//utils.dart';
+import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -129,7 +129,9 @@ Future<String> claimRly(NetworkConfig network) async {
 
   final ethers = getEthClient();
 
-  final claimTx = await getClaimTx(account, network, ethers);
+  // final claimTx = await getClaimTx(account, network, ethers);
+  //TODO: Fix this
+  final claimTx = null;
 
   return relay(claimTx, network);
 }
@@ -152,7 +154,8 @@ Future<String> relay(
     throw missingWalletError;
   }
 
-  return relayTransaction(account, network, tx);
+  // return relayTransaction(account, network, tx);
+  return "relayTransaction(account, network, tx)";
 }
 
 dynamic getEvmNetwork(NetworkConfig network) {

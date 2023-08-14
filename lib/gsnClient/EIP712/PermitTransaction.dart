@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:js_interop';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
-import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:meta/meta.dart';
 
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
