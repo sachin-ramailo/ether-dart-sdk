@@ -14,4 +14,4 @@ abstract class Network {
   void setApiKey(String apiKey);
 }
 
-final Network RlyMumbaiNetwork = getEvmNetwork(MumbaiNetworkConfig);
+final Network RlyMumbaiNetwork = getEvmNetwork(mumbaiNetworkConfig);

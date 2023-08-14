@@ -1,6 +1,8 @@
+import 'package:sdk/gsnClient/network_config/network_config_mumbai.dart';
+
 import './network_config.dart';
 
-final NetworkConfig MumbaiNetworkConfig = NetworkConfig(
+final NetworkConfig mumbaiNetworkConfig = NetworkConfig(
   contracts: Contracts(
     rlyERC20: '0x1C7312Cb60b40cF586e796FEdD60Cf243286c9E9',
     tokenFaucet: '0xe7C3BD692C77Ec0C0bde523455B9D142c49720fF',

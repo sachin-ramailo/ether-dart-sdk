@@ -53,16 +53,17 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
     setState(() {
       loading = true;
     });
+    //TODO:
 
-    await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
+    // await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
 
-    fetchBalance();
+    // fetchBalance();
 
-    setState(() {
-      transferBalance = '';
-      transferAddress = '';
-      loading = false;
-    });
+    // setState(() {
+    //   transferBalance = '';
+    //   transferAddress = '';
+    //   loading = false;
+    // });
   }
 
   void deleteAccount() async {

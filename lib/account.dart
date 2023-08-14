@@ -1,8 +1,8 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:sdk/utils/constants.dart';
-
 import 'package:web3dart/web3dart.dart';
 
 import 'keyManager.dart';
@@ -129,6 +129,14 @@ class AccountsUtil {
     }
 
     Web3Client client = getEthClient();
+    print(wallet.privateKey.address);
     return client.getBalance(wallet.privateKey.address);
   }
+}
+
+Uint8List convertStringToUint8List(String str) {
+  final List<int> codeUnits = str.codeUnits;
+  final Uint8List unit8List = Uint8List.fromList(codeUnits);
+
+  return unit8List;
 }

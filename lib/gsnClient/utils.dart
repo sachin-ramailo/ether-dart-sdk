@@ -31,9 +31,9 @@ class GsnTransactionDetails {
   String? gas;
 
   //should be hex
-  final String maxFeePerGas;
+  String maxFeePerGas;
   //should be hex
-  final String maxPriorityFeePerGas;
+  String maxPriorityFeePerGas;
   //paymaster contract address
   final String? paymasterData;
 

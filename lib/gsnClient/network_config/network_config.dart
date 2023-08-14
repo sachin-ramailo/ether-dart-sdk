@@ -1,19 +1,34 @@
-// import '../utils.dart';
-// import 'network_config_local.dart';
-//
-// export 'network_config_local.dart';
-// export 'network_config_mumbai.dart';
-// export 'network_config_polygon.dart';
-//
-// class GsnConfig {
-//   final PrefixedHexString paymasterAddress;
-//   final PrefixedHexString forwarderAddress;
-//   final PrefixedHexString relayHubAddress;
-//   var PrefixedHexString relayWorkerAddress;
+// // class NetworkConfig {
+// //   final Contracts contracts;
+// //   final GSNConfig gsn;
+// //   String? relayerApiKey;
+
+// //   NetworkConfig({
+// //     required this.contracts,
+// //     required this.gsn,
+// //     this.relayerApiKey,
+// //   });
+// // }
+
+// class Contracts {
+//   final String tokenFaucet;
+//   final String rlyERC20;
+
+//   Contracts({
+//     required this.tokenFaucet,
+//     required this.rlyERC20,
+//   });
+// }
+
+// class GSNConfig {
+//   final String paymasterAddress;
+//   String forwarderAddress;
+//   final String relayHubAddress;
+//   String relayWorkerAddress;
 //   final String relayUrl;
 //   final String rpcUrl;
-//   final IntString chainId;
-//   final IntString maxAcceptanceBudget;
+//   final int chainId;
+//   final String maxAcceptanceBudget;
 //   final String domainSeparatorName;
 //   final int gtxDataZero;
 //   final int gtxDataNonZero;
@@ -21,8 +36,8 @@
 //   final int maxPaymasterDataLength;
 //   final int maxApprovalDataLength;
 //   final int maxRelayNonceGap;
-//
-//   GsnConfig({
+
+//   GSNConfig({
 //     required this.paymasterAddress,
 //     required this.forwarderAddress,
 //     required this.relayHubAddress,
@@ -38,17 +53,5 @@
 //     required this.maxPaymasterDataLength,
 //     required this.maxApprovalDataLength,
 //     required this.maxRelayNonceGap,
-//   });
-// }
-//
-// class NetworkConfig {
-//   final Contracts contracts;
-//   final GsnConfig gsn;
-//   final String? relayerApiKey;
-//
-//   NetworkConfig({
-//     required this.contracts,
-//     required this.gsn,
-//     this.relayerApiKey,
 //   });
 // }

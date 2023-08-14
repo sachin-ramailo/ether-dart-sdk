@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
+import 'package:sdk/gsnClient/network_config/network_config_mumbai.dart';
 import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
