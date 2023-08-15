@@ -23,7 +23,7 @@ final mumbaiNetworkConfig = NetworkConfig(
     relayUrl: 'https://api.rallyprotocol.com',
     rpcUrl:
         'https://polygon-mumbai.g.alchemy.com/v2/-dYNjZXvre3GC9kYtwDzzX4N8tcgomU4',
-    chainId: 80001,
+    chainId: '80001',
     maxAcceptanceBudget: '285252',
     domainSeparatorName: 'GSN Relayed Transaction',
     gtxDataNonZero: 16,

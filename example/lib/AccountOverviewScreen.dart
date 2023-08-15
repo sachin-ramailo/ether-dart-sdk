@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sdk/account.dart';
+import 'package:sdk/network.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 
-// const RlyNetwork = RlyMumbaiNetwork;
+final RlyNetwork = RlyMumbaiNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String rlyAccount;
@@ -18,7 +19,7 @@ class AccountOverviewScreen extends StatefulWidget {
 class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
   bool loading = false;
   double? balance;
-  String transferBalance = '';
+  String transferBalance = '0.5';
   String transferAddress = '';
   String? mnemonic;
 
@@ -56,7 +57,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    // await RlyNetwork.transfer(transferAddress, int.parse(transferBalance));
+    await RlyNetwork.transfer(transferAddress, double.parse(transferBalance));
 
     fetchBalance();
 

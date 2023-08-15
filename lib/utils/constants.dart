@@ -24,3 +24,9 @@ Web3Client getEthClient() {
   var httpClient = Client();
   return Web3Client(apiUrl, httpClient);
 }
+
+Web3Client getEthClientForURL(String url) {
+  var apiUrl = url; //Replace with your API
+  var httpClient = Client();
+  return Web3Client(apiUrl, httpClient);
+}

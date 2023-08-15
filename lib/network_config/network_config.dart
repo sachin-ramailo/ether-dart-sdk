@@ -24,10 +24,10 @@ class GSNConfig {
   final String paymasterAddress;
   final String forwarderAddress;
   final String relayHubAddress;
-  final String relayWorkerAddress;
+  String relayWorkerAddress;
   final String relayUrl;
   final String rpcUrl;
-  final int chainId;
+  final String chainId;
   final String maxAcceptanceBudget;
   final String domainSeparatorName;
   final int gtxDataZero;

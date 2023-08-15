@@ -69,7 +69,7 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     MetaTransaction(
       name: contractName,
       version: '1',
-      salt: hex.encode([chainId]).padLeft(
+      salt: hex.encode([int.parse(chainId)]).padLeft(
           64, '0'), // Padding the chainId with zeroes to make it 32 bytes
       verifyingContract: contractAddress,
       nonce: nonce,

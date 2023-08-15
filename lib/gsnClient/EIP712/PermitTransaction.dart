@@ -6,11 +6,12 @@ import 'package:web3dart/web3dart.dart';
 
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
+import '../utils.dart';
 
 class Permit {
   String name;
   String version;
-  int chainId;
+  String chainId;
   String verifyingContract;
   String owner;
   String spender;

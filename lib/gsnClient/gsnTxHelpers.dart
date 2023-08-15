@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:convert/convert.dart' as convertLib;
+import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:sdk/contracts/tokenFaucet.dart';
 import 'package:sdk/gsnClient/ABI/IForwarder.dart';
@@ -10,7 +11,7 @@ import 'package:web3dart/crypto.dart';
 import 'package:sdk/gsnClient/ABI/IRelayHub.dart';
 
 import 'package:sdk/gsnClient/utils.dart';
-import 'package:sdk/utils/constants.dart';
+
 import 'package:web3dart/web3dart.dart';
 
 import '../network_config/network_config.dart';
@@ -19,7 +20,7 @@ import 'EIP712/RelayData.dart';
 import 'EIP712/RelayRequest.dart';
 import 'EIP712/typedSigning.dart';
 
-class GsnUtils {
+
 
   CalldataBytes calculateCalldataBytesZeroNonzero(String calldata) {
     final calldataBuf =
@@ -93,7 +94,6 @@ class GsnUtils {
         '0x${List.filled(config.maxApprovalDataLength, 'ff').join()}';
 
     final relayHub = relayHubContract(config.relayHubAddress);
-    final client = getEthClient();
     // Estimate the gas cost for the relayCall function call
 
     var relayRequestJson = jsonEncode(relayRequest.toJson());
@@ -102,17 +102,19 @@ class GsnUtils {
     //function itself(in dart files),we have to use this encodeCall to make a callable obejct
     //which will be used further in the code
     //for ex: here is is used in calculated the gas estimate in the next step
-    final functionCall = relayHub.function('relayCall').encodeCall([
-      config.domainSeparatorName,
-      maxAcceptanceBudget,
-      relayRequestJson,
-      signature,
-      approvalData
-    ]);
+
+    final function = relayHub.function('relayHub');
+
+    final tx =  Transaction.callContract(contract: relayHub, function: function, parameters: [ config.domainSeparatorName, maxAcceptanceBudget, relayRequestJson, signature,  approvalData]);
+    if (tx == null || tx.data == null ||tx.data!.isEmpty) {
+      throw 'tx not populated';
+    }
+
 
     //todo: is the calculation of call data cost(from the rly sdk gsnTxHelper file)
     //similar to the estimate gas here?
-    return BigInt.from(calculateCalldataCost(functionCall, config.gtxDataNonZero, config.gtxDataZero)).toString();
+    //TODO: remove this to string from next line
+    return BigInt.from(calculateCalldataCost(tx.data.toString(), config.gtxDataNonZero, config.gtxDataZero)).toString();
   }
 
   Future<String> getSenderNonce(EthereumAddress sender,
@@ -187,14 +189,11 @@ class GsnUtils {
     final parameters = [
       relayRequest['request']['from'],
       relayRequest['request']['nonce'],
-      signature,
-    ];
+      signature
     ];
 
-    // TODO: FIX THIS -> calculate hash
-    // final hash = keccak256(hex.encode(([types, parameters])));
-    // final rawRelayRequestId = hex.encode(hash.bytes).padLeft(64, '0');
-    final rawRelayRequestId = "hex.encode(hash.bytes).padLeft(64, '0');";
+    final hash = keccak256(AbiUtil.rawEncode(types, parameters));
+    final rawRelayRequestId = hex.encode(hash).padLeft(64, '0');
     final prefixSize = 8;
     final prefixedRelayRequestId = rawRelayRequestId.replaceFirst(
         RegExp('^.{$prefixSize}'), '0' * prefixSize);
@@ -254,7 +253,7 @@ class GsnUtils {
 
   Future<String> handleGsnResponse(
     dynamic res,
-    Web3Client provider,
+    Web3Client ethClient,
   ) async {
     if (res.data['error'] != null) {
       throw {
@@ -262,12 +261,19 @@ class GsnUtils {
         'details': res.data['error'],
       };
     } else {
-      final txHash = keccak256(res.data['signedTx']).hex;
-      await provider.waitForTransaction(txHash);
+      final txHash = keccak256(res.data['signedTx']).toString();
+      // Poll for the transaction receipt until it's confirmed
+      TransactionReceipt? receipt;
+      do {
+        receipt = await ethClient.getTransactionReceipt(txHash);
+        if (receipt == null) {
+          await Future.delayed(Duration(seconds: 2)); // Wait for 2 seconds
+        }
+      } while (receipt == null);
       return txHash;
     }
   }
-}
+
 
 class CalldataBytes {
   final int calldataZeroBytes;
