@@ -87,10 +87,7 @@ Future<Map<String, dynamic>> buildRelayHttpRequest(
 
 
   final relayWorkerAddress = EthereumAddress.fromHex(relayRequest.relayData.relayWorker);
-  EthPrivateKey ethPrivateKey = EthPrivateKey.fromHex(relayWorkerAddress.hex);
-  final wallet = Wallet.createNew(ethPrivateKey,'password',Random.secure());
-
-  final relayLastKnownNonce = await wallet.();
+  final relayLastKnownNonce = await web3Provider.getTransactionCount(relayWorkerAddress);
   final relayMaxNonce = relayLastKnownNonce + config.gsn.maxRelayNonceGap;
 
   final metadata = {
