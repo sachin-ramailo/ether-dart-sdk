@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdk/account.dart';
 import 'package:sdk/network.dart';
-import 'package:sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 

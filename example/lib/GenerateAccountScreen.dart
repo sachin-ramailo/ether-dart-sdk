@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'LoadingScreen.dart';
 import 'components/AppContainer.dart';
 import 'components/CustomText.dart';
 import 'components/RlyCard.dart';

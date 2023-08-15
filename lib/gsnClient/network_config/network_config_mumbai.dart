@@ -1,6 +1,4 @@
 import '../../network_config/network_config.dart';
-import 'network_config.dart';
-import 'network_config_local.dart';
 
 class NetworkConfig {
   final Contracts contracts;

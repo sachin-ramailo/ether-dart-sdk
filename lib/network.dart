@@ -1,8 +1,6 @@
 import 'package:sdk/networks/evm_networks.dart';
-import 'package:web3dart/credentials.dart';
 import 'package:sdk/gsnClient/utils.dart';
 
-import 'network_config/network_config.dart';
 import 'network_config/network_config_mumbai.dart';
 
 abstract class Network {

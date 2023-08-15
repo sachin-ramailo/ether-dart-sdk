@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:sdk/gsnClient/EIP712/ForwardRequest.dart';
 import 'package:sdk/gsnClient/EIP712/RelayData.dart';

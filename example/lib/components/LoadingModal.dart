@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../LoadingScreen.dart';
 import 'CustomText.dart';
 
 class LoadingModal extends StatelessWidget {

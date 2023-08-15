@@ -1,4 +1,3 @@
-import 'package:sdk/gsnClient/ABI/IRelayHubData.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'IForwarderData.dart';
