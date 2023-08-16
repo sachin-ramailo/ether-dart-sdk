@@ -52,10 +52,12 @@ class NetworkImpl extends Network{
     //TODO: we have to use this provider to make this erc20 contract
     // final token = erc20(provider,tokenAddress);
     final token = erc20(tokenAddress);
-    // final decimals = await token.decimals();
-    //TODO: we have to use this token to get balance of this erc20 contract
-    final bal = await provider.getBalance(account.privateKey.address);
-    return bal.getValueInUnit(EtherUnit.gwei);
+    final funCall = await provider.call(contract: token, function: token.function("decimals"), params: []);
+    final decimals = funCall[0];
+
+    final balanceOfCall = await provider.call(contract: token, function: token.function('balanceOf'), params: [account.privateKey.address]);
+    final balance = balanceOfCall[0];
+    return formatUnits(balance, decimals);
   }
 
   @override
@@ -73,6 +75,15 @@ class NetworkImpl extends Network{
   void setApiKey(String apiKey) {
     network.relayerApiKey = apiKey;
   }
+
+  double formatUnits(BigInt wei, BigInt decimals) {
+    final etherUnit = EtherUnit.gwei;
+    final balanceFormatted = EtherAmount.fromBigInt(etherUnit, wei)
+        .getValueInUnit(EtherUnit.wei);
+    return balanceFormatted;
+  }
+
+
 
   @override
   Future<String> transfer(String destinationAddress, double amount, {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod})
