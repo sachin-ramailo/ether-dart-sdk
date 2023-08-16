@@ -122,7 +122,10 @@ Future<bool> hasPermit(
   try {
     final token = erc20(contractAddress);
 
-    final name = token.abi.name;
+    final nameCall =  await provider.call(
+        contract: token, function: token.function('name'), params: []);
+
+    final name = nameCall[0];
     final nonce = await provider.getTransactionCount(token.address);
     final deadline = await getPermitDeadline(provider);
     final eip712Domain = await provider.call(
