@@ -35,17 +35,9 @@ Map<String, dynamic> getErc20DataJson() {
           {"internalType": "string", "name": "name", "type": "string"},
           {"internalType": "string", "name": "version", "type": "string"},
           {"internalType": "uint256", "name": "chainId", "type": "uint256"},
-          {
-            "internalType": "address",
-            "name": "verifyingContract",
-            "type": "address"
-          },
+          {"internalType": "address", "name": "verifyingContract", "type": "address"},
           {"internalType": "bytes32", "name": "salt", "type": "bytes32"},
-          {
-            "internalType": "uint256[]",
-            "name": "extensions",
-            "type": "uint256[]"
-          }
+          {"internalType": "uint256[]", "name": "extensions", "type": "uint256[]"}
         ],
         "stateMutability": "view",
         "type": "function"
