@@ -18,7 +18,7 @@ class AccountOverviewScreen extends StatefulWidget {
 class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
   bool loading = false;
   double? balance;
-  String transferBalance = '0.5';
+  String transferBalance = '0.1';
   String transferAddress = '';
   String? mnemonic;
 

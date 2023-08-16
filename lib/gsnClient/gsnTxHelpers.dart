@@ -140,7 +140,7 @@ import 'EIP712/typedSigning.dart';
     RelayRequest relayRequest,
     String domainSeparatorName,
     String chainId,
-    AccountKeypair account,
+    Wallet account,
   ) async {
     final cloneRequest = RelayRequest(
       request: ForwardRequest(
@@ -174,7 +174,7 @@ import 'EIP712/typedSigning.dart';
 
     final signature = EthSigUtil.signTypedData(
       jsonData: jsonEncode(signedGsnData.message),
-      privateKey: account.privateKey,
+      privateKey: account.privateKey.toString(),
       version: TypedDataVersion.V1,
     );
 
@@ -201,7 +201,7 @@ import 'EIP712/typedSigning.dart';
   }
 
   Future<GsnTransactionDetails> getClaimTx(
-    AccountKeypair account,
+    Wallet account,
     NetworkConfig config,
     Web3Client client,
   ) async {
@@ -212,7 +212,7 @@ import 'EIP712/typedSigning.dart';
 
     final tx = faucet.function('claim').encodeCall([]);
     final gas = await client.estimateGas(
-      sender: EthereumAddress.fromHex(account.address),
+      sender: account.privateKey.address,
       data: tx,
     );
 
@@ -224,7 +224,7 @@ import 'EIP712/typedSigning.dart';
     final maxFeePerGas =
         gasPrice.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
     final gsnTx = GsnTransactionDetails(
-      from: account.address,
+      from: account.privateKey.address.toString(),
       data: tx.toString(),
       value: EtherAmount.zero().toString(),
       to: faucet.address.hex,

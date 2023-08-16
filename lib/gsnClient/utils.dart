@@ -7,16 +7,6 @@ enum MetaTxMethod {
   ExecuteMetaTransaction,
 }
 
-class AccountKeypair {
-  final String privateKey;
-  final String address;
-
-  AccountKeypair({
-    required this.privateKey,
-    required this.address,
-  });
-}
-
 class GsnTransactionDetails {
   // users address
   final String from;
