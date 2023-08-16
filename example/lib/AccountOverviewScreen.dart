@@ -27,10 +27,10 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    // double bal = await RlyNetwork.getBalance();
-    EtherAmount amt = await AccountsUtil.getInstance().getBalance();
+    double bal = await RlyNetwork.getBalance();
+    // EtherAmount amt = await AccountsUtil.getInstance().getBalance();
     setState(() {
-      balance = amt.getValueInUnit(EtherUnit.gwei).toDouble();
+      balance = bal;
       loading = false;
     });
   }
