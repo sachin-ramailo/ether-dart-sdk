@@ -124,12 +124,17 @@ Future<bool> hasPermit(
 
     final nameCall =  await provider.call(
         contract: token, function: token.function('name'), params: []);
-
     final name = nameCall[0];
-    final nonce = await provider.getTransactionCount(token.address);
-    final deadline = await getPermitDeadline(provider);
+
     final eip712Domain = await provider.call(
         contract: token, function: token.function('eip712Domain'), params: []);
+
+    final noncesFunctionCall =  await provider.call(
+        contract: token, function: token.function('nonces'), params: [account.privateKey.address]);
+    final nonce = noncesFunctionCall[0];
+
+    final deadline = await getPermitDeadline(provider);
+
 
     final salt =
         /*5 is hardcoded here because in the erc20 json,

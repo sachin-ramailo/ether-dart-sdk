@@ -104,7 +104,7 @@ class NetworkImpl extends Network{
       throw insufficientBalanceError;
     }
 
-    final ethers = getEthClient();
+    final provider = getEthClientForURL(network.gsn.rpcUrl);
 
     GsnTransactionDetails? transferTx;
 
@@ -118,7 +118,7 @@ class NetworkImpl extends Network{
           amount,
           network,
           tokenAddress,
-          ethers,
+          provider,
         );
       } else {
         transferTx = await getExecuteMetatransactionTx(
@@ -127,19 +127,19 @@ class NetworkImpl extends Network{
           amount,
           network,
           tokenAddress,
-          ethers,
+          provider,
         );
       }
     } else {
       final executeMetaTransactionSupported = await hasExecuteMetaTransaction(
-          account, destinationAddress, amount, network, tokenAddress, ethers);
+          account, destinationAddress, amount, network, tokenAddress, provider);
 
       final permitSupported = await hasPermit(
         account,
         amount,
         network,
         tokenAddress,
-        ethers,
+        provider,
       );
 
       if (executeMetaTransactionSupported) {
@@ -149,7 +149,7 @@ class NetworkImpl extends Network{
           amount,
           network,
           tokenAddress,
-          ethers,
+          provider,
         );
       } else if (permitSupported) {
         transferTx = await getPermitTx(
@@ -158,7 +158,7 @@ class NetworkImpl extends Network{
           amount,
           network,
           tokenAddress,
-          ethers,
+          provider,
         );
       } else {
         throw transferMethodNotSupportedError;
