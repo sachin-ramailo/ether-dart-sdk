@@ -79,7 +79,7 @@ class NetworkImpl extends Network{
   double formatUnits(BigInt wei, BigInt decimals) {
     final etherUnit = EtherUnit.gwei;
     final balanceFormatted = EtherAmount.fromBigInt(etherUnit, wei)
-        .getValueInUnit(EtherUnit.wei);
+        .getValueInUnit(EtherUnit.gwei);
     return balanceFormatted;
   }
 
