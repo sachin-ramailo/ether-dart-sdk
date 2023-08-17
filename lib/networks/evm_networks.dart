@@ -1,3 +1,4 @@
+import 'package:sdk/gsnClient/gsnTxHelpers.dart';
 import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/network.dart';
 import 'package:sdk/utils/constants.dart';
@@ -25,6 +26,7 @@ class NetworkImpl extends Network{
     }
 
     final existingBalance = await getBalance();
+    // final existingBalance = 0;
 
     if (existingBalance > 0) {
       throw priorDustingError;
@@ -32,9 +34,9 @@ class NetworkImpl extends Network{
 
     final ethers = getEthClient();
 
-    // final claimTx = await getClaimTx(account, network, ethers);
+    final claimTx = await getClaimTx(account, network, ethers);
     //TODO: Fix this
-    final claimTx = null;
+    // final claimTx = null;
 
     return relay(claimTx);
   }
@@ -172,6 +174,24 @@ class NetworkImpl extends Network{
   Future<String> registerAccount() async {
     print("This method is deprecated. Update to 'claimRly' instead.");
     return claimRly();
+  }
+
+  @override
+  Future<String> simpleTransfer(String destinationAddress, double amount, {String? tokenAddress, MetaTxMethod? metaTxMethod}) async {
+  Web3Client client = getEthClient();
+  final account = await AccountsUtil.getInstance().getWallet();
+
+  final result = await client.sendTransaction(
+      EthPrivateKey.fromHex("f6125bb4f39bd9281eb6ee3f6f67f2f4d2694680b6996ff918341f720d8c1b26"),
+    Transaction(
+      to: EthereumAddress.fromHex('0x7829222A97392EFcBc743531222CB71606d6f2b4'),
+      gasPrice: EtherAmount.fromInt(EtherUnit.gwei,1000),
+      maxGas: 100000,
+      value: EtherAmount.fromBigInt(EtherUnit.gwei, BigInt.from(3000000)),
+    ),
+    chainId: 80001
+  );
+  return result;
   }
 
 }

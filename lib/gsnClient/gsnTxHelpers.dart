@@ -210,10 +210,13 @@ import 'EIP712/typedSigning.dart';
       EthereumAddress.fromHex(config.contracts.tokenFaucet),
     );
 
-    final tx = faucet.function('claim').encodeCall([]);
+
+    final fn = faucet.function('claim');
+
+    final tx1 = client.call(contract: faucet, function: fn, params: []);
     final gas = await client.estimateGas(
       sender: account.privateKey.address,
-      data: tx,
+      // data: tx,
     );
 
     //TODO:-> following code is inspired from getFeeData method of

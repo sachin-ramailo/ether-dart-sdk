@@ -2,9 +2,10 @@ import './network_config.dart';
 
 final NetworkConfig MumbaiNetworkConfig = NetworkConfig(
   contracts: Contracts(
-    // rlyERC20: '0x1C7312Cb60b40cF586e796FEdD60Cf243286c9E9',
-    rlyERC20: '0x0000000000000000000000000000000000001010',
+    rlyERC20: '0x1C7312Cb60b40cF586e796FEdD60Cf243286c9E9',
+    // rlyERC20: '0x0000000000000000000000000000000000001010',
     tokenFaucet: '0xe7C3BD692C77Ec0C0bde523455B9D142c49720fF',
+    // tokenFaucet: '0xD8Ea779b8FFC1096CA422D40588C4c0641709890',
   ),
   gsn: GSNConfig(
     paymasterAddress: '0x499D418D4493BbE0D9A8AF3D2A0768191fE69B87',
