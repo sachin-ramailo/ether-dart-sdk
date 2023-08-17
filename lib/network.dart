@@ -10,6 +10,11 @@ abstract class Network {
       double amount,
       {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod}
       );
+  Future<String> simpleTransfer(
+      String destinationAddress,
+      double amount,
+      {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod}
+      );
     Future<String> claimRly();
   Future<String> registerAccount();
   Future<String> relay(GsnTransactionDetails tx);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdk/account.dart';
 import 'package:sdk/network.dart';
+import 'package:sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -19,7 +20,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
   bool loading = false;
   double? balance;
   String transferBalance = '0.1';
-  String transferAddress = '';
+  String transferAddress = '0x7829222A97392EFcBc743531222CB71606d6f2b4';
   String? mnemonic;
 
   void fetchBalance() async {
@@ -47,7 +48,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    // await RlyNetwork.claimRly();
+    await RlyNetwork.claimRly();
 
     fetchBalance();
   }
@@ -68,8 +69,24 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
     });
   }
 
+  void simpleTransferTokens() async {
+    setState(() {
+      loading = true;
+    });
+
+    final txnId = await RlyNetwork.simpleTransfer(transferAddress, double.parse(transferBalance));
+    printLog('TXN ID for sending tokens = $txnId');
+
+    fetchBalance();
+
+    setState(() {
+      transferBalance = '';
+      transferAddress = '';
+      loading = false;
+    });
+  }
   void deleteAccount() async {
-    // await permanentlyDeleteAccount();
+     AccountsUtil.getInstance().permanentlyDeleteAccount();
   }
 
   void revealMnemonic() async {
@@ -131,6 +148,10 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
                         child: Text('Register My Account'),
                       ),
                       const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: simpleTransferTokens,
+                        child: Text('Simple Transfer'),
+                      ),
                       ElevatedButton(
                         onPressed: transferTokens,
                         child: Text('Transfer RLY'),
