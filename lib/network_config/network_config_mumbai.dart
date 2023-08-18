@@ -8,13 +8,15 @@ final NetworkConfig MumbaiNetworkConfig = NetworkConfig(
     // tokenFaucet: '0xD8Ea779b8FFC1096CA422D40588C4c0641709890',
   ),
   gsn: GSNConfig(
-    paymasterAddress: '0x499D418D4493BbE0D9A8AF3D2A0768191fE69B87',
+    paymasterAddress: '0x8b3a505413Ca3B0A17F077e507aF8E3b3ad4Ce4d',
     forwarderAddress: '0xB2b5841DBeF766d4b521221732F9B618fCf34A87',
     relayHubAddress: '0x3232f21A6E08312654270c78A773f00dd61d60f5',
-    relayWorkerAddress: '0x7b556ef275185122257090bd59f74fe4c3c3ca96',
+    relayWorkerAddress: '0xb9950b71ec94cbb274aeb1be98e697678077a17f',
     relayUrl: 'https://api.rallyprotocol.com',
+    // rpcUrl:
+    //     'https://polygon-mumbai.infura.io/v3/fc4ab81f4b824f9e9c3bdd065f765afc',
     rpcUrl:
-        'https://polygon-mumbai.infura.io/v3/fc4ab81f4b824f9e9c3bdd065f765afc',
+        'https://polygon-mumbai.g.alchemy.com/v2/-dYNjZXvre3GC9kYtwDzzX4N8tcgomU4',
     chainId: '80001',
     maxAcceptanceBudget: '285252',
     domainSeparatorName: 'GSN Relayed Transaction',

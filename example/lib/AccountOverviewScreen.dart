@@ -20,7 +20,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
   bool loading = false;
   double? balance;
   String transferBalance = '0.1';
-  String transferAddress = '0x7829222A97392EFcBc743531222CB71606d6f2b4';
+  String transferAddress = '0x8003b6241dEEE73Db1DbEfa63A224D6ebc493498';
   String? mnemonic;
 
   void fetchBalance() async {

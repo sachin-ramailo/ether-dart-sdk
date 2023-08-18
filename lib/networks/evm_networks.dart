@@ -182,12 +182,11 @@ class NetworkImpl extends Network{
   final account = await AccountsUtil.getInstance().getWallet();
 
   final result = await client.sendTransaction(
-      EthPrivateKey.fromHex("f6125bb4f39bd9281eb6ee3f6f67f2f4d2694680b6996ff918341f720d8c1b26"),
+      account.privateKey,
     Transaction(
-      to: EthereumAddress.fromHex('0x7829222A97392EFcBc743531222CB71606d6f2b4'),
-      gasPrice: EtherAmount.fromInt(EtherUnit.gwei,1000),
-      maxGas: 100000,
-      value: EtherAmount.fromBigInt(EtherUnit.gwei, BigInt.from(3000000)),
+      to: EthereumAddress.fromHex('0x39cc7b9f44cf39f3fd53a91db57670096c4c3e4f'),
+      gasPrice: EtherAmount.fromInt(EtherUnit.wei,1000000),
+      value: EtherAmount.fromBigInt(EtherUnit.gwei, BigInt.from(3)),
     ),
     chainId: 80001
   );

@@ -228,7 +228,7 @@ import 'EIP712/typedSigning.dart';
         gasPrice.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
     final gsnTx = GsnTransactionDetails(
       from: account.privateKey.address.toString(),
-      data: tx.toString(),
+      data: tx1.toString(),
       value: EtherAmount.zero().toString(),
       to: faucet.address.hex,
       gas: gas.toString(),
@@ -277,6 +277,29 @@ import 'EIP712/typedSigning.dart';
     }
   }
 
+Future<BigInt> getSenderContractNonce(Web3Client provider,DeployedContract token, EthereumAddress address) async {
+  try{
+    final fn = token.function('nonces');
+    final fnCall  = await provider.call(contract: token, function: fn, params: []);
+    return fnCall[0];
+
+  } on Exception {
+    final fn = token.function('getNonce');
+    final fnCall  = await provider.call(contract: token, function: fn, params: []);
+    return fnCall[0];
+  }
+}
+
+BigInt parseUnits(String value, int decimals) {
+  BigInt base = BigInt.from(10).pow(decimals);
+  List<String> parts = value.split('.');
+  BigInt wholePart = BigInt.parse(parts[0]);
+  BigInt fractionalPart = parts.length > 1
+      ? BigInt.parse(parts[1].padRight(decimals, '0'))
+      : BigInt.zero;
+
+  return wholePart * base + fractionalPart;
+}
 
 class CalldataBytes {
   final int calldataZeroBytes;

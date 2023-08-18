@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:sdk/contracts/erc20.dart';
+import 'package:sdk/gsnClient/gsnTxHelpers.dart';
 import 'package:sdk/gsnClient/utils.dart';
 import 'package:sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
@@ -91,55 +92,6 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
   };
 }
 
-Future<bool> hasExecuteMetaTransaction(
-  Wallet account,
-  String destinationAddress,
-  double amount,
-  NetworkConfig config,
-  String contractAddress,
-  Web3Client provider,
-) async {
-  try {
-    final token = erc20(contractAddress);
-    final name = token.abi.name;
-    final nonce = await provider.getTransactionCount(token.address);
-    // final decimals = await token.decimals();
-    // final decimalAmount = BigInt.from(amount) * BigInt.from(10).pow(decimals);
-    final decimalAmount = BigInt.from(amount) * BigInt.from(10);
-    //TODO: inform tej about this
-    // token.function("name").encodeCall(params);
-    final data = await provider.call(
-        contract: token,
-        function: token.function("transfer"),
-        params: [EthereumAddress.fromHex(destinationAddress), decimalAmount]);
-
-    final signatureData = await getMetatransactionEIP712Signature(
-      account,
-      name,
-      contractAddress,
-      data[0],
-      config,
-      nonce.toInt(),
-    );
-
-    await _estimateGasForMetaTransaction(
-      token,
-      EthereumAddress.fromHex(account.privateKey.address.hex),
-      EthereumAddress.fromHex(config.gsn.paymasterAddress),
-      decimalAmount,
-      signatureData['v'],
-      signatureData['r'],
-      signatureData['s'],
-      EthereumAddress.fromHex(account.privateKey.address.hex),
-      'transfer',
-    );
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 _estimateGasForMetaTransaction(
   DeployedContract token,
   EthereumAddress accountAddress,
@@ -182,6 +134,57 @@ _estimateGasForMetaTransaction(
   );
 
   return gasEstimate;
+}
+
+Future<bool> hasExecuteMetaTransaction(
+  Wallet account,
+  String destinationAddress,
+  double amount,
+  NetworkConfig config,
+  String contractAddress,
+  Web3Client provider,
+) async {
+  try {
+    final token = erc20(contractAddress);
+    final nameCall =  await provider.call(
+        contract: token, function: token.function('name'), params: []);
+    final name = nameCall[0];
+
+    final nonce = await getSenderContractNonce(provider, token, account.privateKey.address);
+
+    final funCall = await provider.call(contract: token, function: token.function("decimals"), params: []);
+    final decimals = funCall[0];
+    final decimalAmount = parseUnits(amount.toString(), decimals);
+    //TODO: inform tej about this
+    // token.function("name").encodeCall(params);
+
+    final data = token.function('transfer').encodeCall([destinationAddress,decimalAmount]);
+
+    final signatureData = await getMetatransactionEIP712Signature(
+      account,
+      name,
+      contractAddress,
+      data,
+      config,
+      nonce.toInt(),
+    );
+
+    await _estimateGasForMetaTransaction(
+      token,
+      EthereumAddress.fromHex(account.privateKey.address.hex),
+      EthereumAddress.fromHex(config.gsn.paymasterAddress),
+      decimalAmount,
+      signatureData['v'],
+      signatureData['r'],
+      signatureData['s'],
+      EthereumAddress.fromHex(account.privateKey.address.hex),
+      'transfer',
+    );
+
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
