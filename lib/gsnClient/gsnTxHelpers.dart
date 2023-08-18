@@ -280,12 +280,12 @@ import 'EIP712/typedSigning.dart';
 Future<BigInt> getSenderContractNonce(Web3Client provider,DeployedContract token, EthereumAddress address) async {
   try{
     final fn = token.function('nonces');
-    final fnCall  = await provider.call(contract: token, function: fn, params: []);
+    final fnCall  = await provider.call(contract: token, function: fn, params: [address]);
     return fnCall[0];
 
   } on Exception {
     final fn = token.function('getNonce');
-    final fnCall  = await provider.call(contract: token, function: fn, params: []);
+    final fnCall  = await provider.call(contract: token, function: fn, params: [address]);
     return fnCall[0];
   }
 }

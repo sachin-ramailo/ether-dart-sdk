@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:sdk/contracts/erc20.dart';
@@ -17,7 +18,7 @@ class MetaTransaction {
   String? verifyingContract;
   int nonce;
   String from;
-  String functionSignature;
+  Uint8List functionSignature;
 
   MetaTransaction({
     this.name,
@@ -58,7 +59,7 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
   Wallet account,
   String contractName,
   String contractAddress,
-  String functionSignature,
+  Uint8List functionSignature,
   NetworkConfig config,
   int nonce,
 ) async {
@@ -70,8 +71,8 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     MetaTransaction(
       name: contractName,
       version: '1',
-      salt: hex.encode([int.parse(chainId)]).padLeft(
-          64, '0'), // Padding the chainId with zeroes to make it 32 bytes
+      salt: hexZeroPad(int.parse(chainId),32),
+      // Padding the chainId with zeroes to make it 32 bytes
       verifyingContract: contractAddress,
       nonce: nonce,
       from: account.privateKey.address.hex,
@@ -92,49 +93,12 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
   };
 }
 
-_estimateGasForMetaTransaction(
-  DeployedContract token,
-  EthereumAddress accountAddress,
-  EthereumAddress paymasterAddress,
-  BigInt decimalAmount,
-  int v,
-  String r,
-  String s,
-  EthereumAddress fromAddress,
-  String functionName,
-) async {
-  final function = token.function(functionName);
-  final args = [
-    accountAddress,
-    paymasterAddress,
-    decimalAmount,
-    v,
-    r,
-    s,
-  ];
-
-  // Create a list of arguments to pass to the function
-  final data = function.encodeCall(args);
-  // Prepare the transaction
-  final transaction = Transaction(
-    from: fromAddress,
-    to: token.address,
-    gasPrice: EtherAmount.zero(), // Set the gas price to zero to estimate gas
-    data: data,
-  );
-  // Get the Web3Client instance to estimate the gas
-
-// Estimate the gas required for the transaction
-  final provider = getEthClient();
-  final gasEstimate = await provider.estimateGas(
-    gasPrice: EtherAmount.zero(),
-    to: token.address,
-    data: data,
-    sender: fromAddress,
-  );
-
-  return gasEstimate;
+String hexZeroPad(int number, int length) {
+  final hexString = hex.encode(Uint8List.fromList([number]));
+  final paddedHexString = hexString.padLeft(length * 2, '0');
+  return '0x$paddedHexString';
 }
+
 
 Future<bool> hasExecuteMetaTransaction(
   Wallet account,
@@ -146,19 +110,21 @@ Future<bool> hasExecuteMetaTransaction(
 ) async {
   try {
     final token = erc20(contractAddress);
-    final nameCall =  await provider.call(
-        contract: token, function: token.function('name'), params: []);
+    final nameCall = await provider
+        .call(contract: token, function: token.function('name'), params: []);
     final name = nameCall[0];
 
-    final nonce = await getSenderContractNonce(provider, token, account.privateKey.address);
+    final nonce = await getSenderContractNonce(
+        provider, token, account.privateKey.address);
 
-    final funCall = await provider.call(contract: token, function: token.function("decimals"), params: []);
+    final funCall = await provider.call(
+        contract: token, function: token.function("decimals"), params: []);
     final decimals = funCall[0];
-    final decimalAmount = parseUnits(amount.toString(), decimals);
-    //TODO: inform tej about this
-    // token.function("name").encodeCall(params);
+    final decimalAmount = parseUnits(amount.toString(), int.parse(decimals.toString()));
 
-    final data = token.function('transfer').encodeCall([destinationAddress,decimalAmount]);
+    final data = token
+        .function('transfer')
+        .encodeCall([EthereumAddress.fromHex(destinationAddress), decimalAmount]);
 
     final signatureData = await getMetatransactionEIP712Signature(
       account,
@@ -169,17 +135,17 @@ Future<bool> hasExecuteMetaTransaction(
       nonce.toInt(),
     );
 
-    await _estimateGasForMetaTransaction(
-      token,
-      EthereumAddress.fromHex(account.privateKey.address.hex),
-      EthereumAddress.fromHex(config.gsn.paymasterAddress),
-      decimalAmount,
-      signatureData['v'],
+    final executeMetaTransactionFunction = token.function('executeMetaTransaction');
+
+    await provider
+        .call(contract: token, function: executeMetaTransactionFunction, params: [
+      account.privateKey.address,
+      data,
       signatureData['r'],
       signatureData['s'],
-      EthereumAddress.fromHex(account.privateKey.address.hex),
-      'transfer',
-    );
+      signatureData['v'],
+      {"from": account.privateKey.address}
+    ]);
 
     return true;
   } catch (e) {
@@ -232,17 +198,17 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
         s
       ]);
 
-  final gas = await _estimateGasForMetaTransaction(
-    token,
-    EthereumAddress.fromHex(account.privateKey.address.hex),
-    EthereumAddress.fromHex(config.gsn.paymasterAddress),
-    decimalAmount,
-    signatureData['v'],
-    signatureData['r'],
-    signatureData['s'],
-    EthereumAddress.fromHex(account.privateKey.address.hex),
-    'executeMetaTransaction',
-  );
+  // final gas = await _estimateGasForMetaTransaction(
+  //   token,
+  //   EthereumAddress.fromHex(account.privateKey.address.hex),
+  //   EthereumAddress.fromHex(config.gsn.paymasterAddress),
+  //   decimalAmount,
+  //   signatureData['v'],
+  //   signatureData['r'],
+  //   signatureData['s'],
+  //   EthereumAddress.fromHex(account.privateKey.address.hex),
+  //   'executeMetaTransaction',
+  // );
 
   //following code is inspired from getFeeData method of
   //abstrac-provider of ethers js library
@@ -261,7 +227,8 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
     to: token.address.hex,
     /* from the populateTransaction method of index.ts of ethers,
     we know that the to address here is the address of the contract*/
-    gas: '0x${gas.toHexString()}',
+    // gas: '0x${gas.toHexString()}',
+    gas: 'example',
     maxFeePerGas: maxFeePerGas.toString(),
     maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
   );
